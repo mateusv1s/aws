@@ -1,12 +1,15 @@
 package SistemaTransferencia.mateus999.service;
 
+import SistemaTransferencia.mateus999.dto.request.AtualizarContaRequest;
+import SistemaTransferencia.mateus999.dto.request.CriarContaRequest;
 import SistemaTransferencia.mateus999.entity.Conta;
+import SistemaTransferencia.mateus999.exception.ContaNaoEncontradaException;
 import SistemaTransferencia.mateus999.repository.ContaRepository;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class ContaService {
@@ -17,17 +20,30 @@ public class ContaService {
         this.contaRepository = contaRepository;
     }
 
-    public ResponseEntity<Conta> criarConta (@Valid @RequestBody Conta conta) {
-        Conta salvarConta = contaRepository.save(conta);
-        return ResponseEntity.status(HttpStatus.CREATED).body(salvarConta);
+    public Conta criarConta(CriarContaRequest request) {
+        Conta conta = new Conta();
+        conta.setNome(request.nome());
+        conta.setSaldo(request.saldoInicial() != null ? request.saldoInicial() : BigDecimal.ZERO);
+        return contaRepository.save(conta);
     }
 
-    public ResponseEntity<Void> deletarConta (@Valid @RequestBody Conta conta) {
+    public Conta buscarPorId(UUID id) {
+        return contaRepository.findById(id)
+                .orElseThrow(() -> new ContaNaoEncontradaException(id));
+    }
+
+    public List<Conta> listarTodas() {
+        return contaRepository.findAll();
+    }
+
+    public Conta atualizarConta(UUID id, AtualizarContaRequest request) {
+        Conta conta = buscarPorId(id);
+        conta.setNome(request.nome());
+        return contaRepository.save(conta);
+    }
+
+    public void deletarConta(UUID id) {
+        Conta conta = buscarPorId(id);
         contaRepository.delete(conta);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
-
-
-
 }

@@ -1,24 +1,32 @@
 package SistemaTransferencia.mateus999.entity;
 
 import SistemaTransferencia.mateus999.enumerations.StatusTransferencia;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.UUID;
 
-@Data
-@Getter
-@Setter
 @Entity
+@Data
+@NoArgsConstructor
 public class Transferencia {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(unique = true, nullable = false)
     private String idempotencyKey;
 
     private UUID contaOrigemId;
@@ -28,51 +36,11 @@ public class Transferencia {
     @Enumerated(EnumType.STRING)
     private StatusTransferencia status;
 
-    public UUID getId() {
-        return id;
-    }
+    private String motivoFalha;
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
+    @CreationTimestamp
+    private Instant criadaEm;
 
-    public String getIdempotencyKey() {
-        return idempotencyKey;
-    }
-
-    public void setIdempotencyKey(String idempotencyKey) {
-        this.idempotencyKey = idempotencyKey;
-    }
-
-    public UUID getContaOrigemId() {
-        return contaOrigemId;
-    }
-
-    public void setContaOrigemId(UUID contaOrigemId) {
-        this.contaOrigemId = contaOrigemId;
-    }
-
-    public UUID getContaDestinoId() {
-        return contaDestinoId;
-    }
-
-    public void setContaDestinoId(UUID contaDestinoId) {
-        this.contaDestinoId = contaDestinoId;
-    }
-
-    public BigDecimal getValor() {
-        return valor;
-    }
-
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
-
-    public StatusTransferencia getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusTransferencia status) {
-        this.status = status;
-    }
+    @UpdateTimestamp
+    private Instant atualizadaEm;
 }

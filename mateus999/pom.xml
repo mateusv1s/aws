@@ -11,8 +11,8 @@
 	<groupId>SistemaTransferencia</groupId>
 	<artifactId>mateus999</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name/>
-	<description/>
+	<name>mateus999</name>
+	<description>Sistema de transferencia entre contas bancarias com processamento assincrono via SQS</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -28,7 +28,21 @@
 	</scm>
 	<properties>
 		<java.version>17</java.version>
+		<spring-cloud-aws.version>4.1.0</spring-cloud-aws.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.awspring.cloud</groupId>
+				<artifactId>spring-cloud-aws-dependencies</artifactId>
+				<version>${spring-cloud-aws.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -62,6 +76,18 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- Integracao com AWS SQS (fila de transferencias + DLQ) via LocalStack -->
+		<dependency>
+			<groupId>io.awspring.cloud</groupId>
+			<artifactId>spring-cloud-aws-starter-sqs</artifactId>
+		</dependency>
+		<!-- Integracao com AWS Secrets Manager (credenciais do banco) via LocalStack -->
+		<dependency>
+			<groupId>io.awspring.cloud</groupId>
+			<artifactId>spring-cloud-aws-starter-secrets-manager</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator-test</artifactId>

@@ -1,0 +1,8 @@
+spring:
+  config:
+    import: "aws-secretsmanager:/sistemaaws/postgres"
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${DB_NAME:sistemaAWS}
+    username: ${username}
+    password: ${password}
+    driver-class-name: org.postgresql.Driver

@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: transferencia-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-sistemaAWS}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no seu .env}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  localstack:
+    image: localstack/localstack:3.4
+    container_name: transferencia-localstack
+    environment:
+      SERVICES: sqs,secretsmanager
+      DEBUG: 1
+      DEFAULT_REGION: us-east-1
+      DB_USERNAME: ${DB_USERNAME:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:?defina DB_PASSWORD no seu .env}
+    ports:
+      - "4566:4566"
+    volumes:
+      - "./localstack-init:/etc/localstack/init/ready.d"
+      - "localstack-data:/var/lib/localstack"
+
+volumes:
+  postgres-data:
+  localstack-data:

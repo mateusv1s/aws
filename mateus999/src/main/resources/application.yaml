@@ -1,9 +1,13 @@
 spring:
+  application:
+    name: mateus999
+
   datasource:
-    url: jdbc:postgresql://localhost:5432/faculdadePROJETO
-    username: postgres
-    password: Thxu7896
+    url: jdbc:postgresql://localhost:5432/${DB_NAME:sistemaAWS}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -11,3 +15,19 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  cloud:
+    aws:
+      region:
+        static: us-east-1
+      credentials:
+        access-key: test
+        secret-key: test
+      sqs:
+        endpoint: http://localhost:4566
+      secretsmanager:
+        endpoint: http://localhost:4566
+
+app:
+  sqs:
+    transferencias-queue-name: transferencias-queue
