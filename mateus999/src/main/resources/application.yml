@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: mateus999
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/mateus999}
+    username: ${DB_USERNAME:admin}
+    password: ${DB_PASSWORD:admin}
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY_ID:test}
+        secret-key: ${AWS_SECRET_ACCESS_KEY:test}
+      region:
+        static: ${AWS_REGION:us-east-1}
+      sqs:
+        endpoint: ${SQS_ENDPOINT:http://localhost:4566}
+        listener:
+          max-inflight-messages-per-queue: 5
+          max-messages-per-poll: 5
+          poll-timeout: 10s
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  jwt:
+    issuer: ${JWT_ISSUER:mateus999-api}
+    secret: ${JWT_SECRET:dev-only-change-this-secret-with-at-least-32-bytes-123456789}
+    expiration-seconds: ${JWT_EXPIRATION_SECONDS:3600}
+
+  admin:
+    email: ${ADMIN_EMAIL:}
+    password: ${ADMIN_PASSWORD:}
+
+  sqs:
+    transfer-queue: ${TRANSFER_QUEUE:transferencias}
+    transfer-dlq: ${TRANSFER_DLQ:transferencias-dlq}
+
+  reconciliation:
+    stale-after: ${RECONCILIATION_STALE_AFTER:PT5M}
+    max-attempts: ${RECONCILIATION_MAX_ATTEMPTS:5}
+    fixed-delay-ms: ${RECONCILIATION_FIXED_DELAY_MS:60000}
